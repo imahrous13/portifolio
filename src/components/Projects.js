@@ -66,7 +66,7 @@ const Projects = () => {
       stack: ["Python", "Genetic Algorithms", "AI", "Game Theory"],
       github: "https://github.com/imahrous13/tictactoe_AI",
       demo: "https://tictactoe-ai-demo.com",
-      category: "Machine Learning"
+      category: "Game Development"
     },
     {
       title: "Python Game Collection",
