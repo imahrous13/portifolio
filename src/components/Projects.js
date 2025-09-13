@@ -159,7 +159,7 @@ const Projects = () => {
       }
     })();
     return () => { isActive = false; };
-  }, []);
+  }, [projects]);
 
   const categories = useMemo(() => ['All', ...Array.from(new Set(mergedProjects.map(p=>p.category)))], [mergedProjects]);
 

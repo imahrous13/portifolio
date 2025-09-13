@@ -6,7 +6,11 @@
     "@testing-library/jest-dom": "^5.16.4",
     "@testing-library/react": "^13.3.0",
     "@testing-library/user-event": "^13.5.0",
+    "cross-env": "^10.0.0",
+    "dotenv": "^17.2.2",
+    "express": "^4.21.2",
     "framer-motion": "^10.16.4",
+    "node-fetch": "^3.3.2",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-icons": "^4.11.0",
@@ -18,7 +22,9 @@
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
-    "eject": "react-scripts eject"
+    "eject": "react-scripts eject",
+    "server": "node server.js",
+    "server:prod": "cross-env RESEND_API_KEY=re_da7xDZYr_Hn1TsAjRg4FKdaEMtbzGMhcN CONTACT_TO_EMAIL=imahrous13@gmail.com CONTACT_FROM_EMAIL=\"Portfolio Contact <onboarding@resend.dev>\" DRY_RUN=false node server.js"
   },
   "eslintConfig": {
     "extends": [

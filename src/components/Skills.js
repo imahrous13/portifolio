@@ -12,7 +12,6 @@ import {
   FaGamepad,
   FaCogs,
   FaCode,
-  FaRecycle
 } from 'react-icons/fa';
 import { SiMysql, SiOpencv, SiTensorflow } from 'react-icons/si';
 

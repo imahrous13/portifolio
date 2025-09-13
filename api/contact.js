@@ -55,6 +55,7 @@ module.exports = async (req, res) => {
   const fromEmail = process.env.CONTACT_FROM_EMAIL || 'Portfolio Contact <onboarding@resend.dev>';
   const isDryRun = String(process.env.DRY_RUN || '').toLowerCase() === 'true' || process.env.DRY_RUN === '1';
 
+
   if (!resendApiKey && !isDryRun) {
     return json(res, 500, { error: 'Missing RESEND_API_KEY' });
   }
