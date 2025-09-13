@@ -52,12 +52,17 @@ module.exports = async (req, res) => {
   }
 
   const resendApiKey = process.env.RESEND_API_KEY;
+  const smtpHost = process.env.SMTP_HOST;
+  const smtpPort = process.env.SMTP_PORT ? Number(process.env.SMTP_PORT) : undefined;
+  const smtpUser = process.env.SMTP_USER;
+  const smtpPass = process.env.SMTP_PASS;
+
   const toEmail = process.env.CONTACT_TO_EMAIL || process.env.CONTACT_FROM_EMAIL || 'imahrous13@gmail.com';
-  const fromEmail = process.env.CONTACT_FROM_EMAIL || 'Portfolio Contact <onboarding@resend.dev>';
+  const fromEmail = process.env.CONTACT_FROM_EMAIL || (smtpUser ? smtpUser : 'Portfolio Contact <onboarding@resend.dev>');
   const isDryRun = String(process.env.DRY_RUN || '').toLowerCase() === 'true' || process.env.DRY_RUN === '1';
 
-  if (!resendApiKey && !isDryRun) {
-    return json(res, 500, { error: 'Missing RESEND_API_KEY' });
+  if (!resendApiKey && !(smtpHost && smtpPort && smtpUser && smtpPass) && !isDryRun) {
+    return json(res, 500, { error: 'No email provider configured. Set RESEND_API_KEY or SMTP_* envs.' });
   }
   if (!toEmail) {
     return json(res, 500, { error: 'Missing CONTACT_TO_EMAIL' });
@@ -93,11 +98,6 @@ module.exports = async (req, res) => {
   }
 
   // SMTP fallback
-  const smtpHost = process.env.SMTP_HOST;
-  const smtpPort = process.env.SMTP_PORT ? Number(process.env.SMTP_PORT) : undefined;
-  const smtpUser = process.env.SMTP_USER;
-  const smtpPass = process.env.SMTP_PASS;
-
   if (!smtpHost || !smtpPort || !smtpUser || !smtpPass) {
     return json(res, 502, { error: 'Email send failed and no SMTP fallback configured.' });
   }
