@@ -40,29 +40,33 @@ const Projects = () => {
   const projects = [
     {
       title: "Intelligence School Management System",
-      description: "A comprehensive ERP system for educational institutions featuring student management, grade tracking, attendance monitoring, and administrative tools. Built with modern web technologies for scalability and user-friendly interface.",
+      description:
+        "A full-featured school management system that handles student records, classes, grades, attendance, teachers, and fee management. Includes secure authentication, role-based access, and reporting tools to streamline administrative workflows for educational institutions.",
       image: "/api/placeholder/600/400",
       icon: FaDatabase,
-      stack: ["PHP", "MySQL", "JavaScript", "Bootstrap"],
+      stack: ["PHP", "MySQL", "JavaScript", "Bootstrap", "XAMPP"],
       github: "https://github.com/imahrous13/intelligence-school",
       demo: "https://intelligence-school-demo.com",
       category: "Full-Stack Development"
     },
-    {
-      title: "Tracking Barbell Exercises with ML",
-      description: "Advanced motion tracking system using YOLO object detection to analyze and track barbell exercises in real-time. Provides form analysis, rep counting, and workout analytics for fitness enthusiasts.",
-      image: "/api/placeholder/600/400",
-      icon: FaBrain,
-      stack: ["Python", "OpenCV", "YOLO", "NumPy", "Jupyter"],
-      github: "https://github.com/imahrous13/Tracking-barbell-exercises-with-ml",
-      demo: "https://barbell-tracking-demo.com",
-      category: "Machine Learning"
-    },
+    
+      {
+        title: "Tracking Barbell Exercises with ML",
+        description:
+          "Machine learning project focused on analyzing barbell exercise movements from video data. The system tracks barbell motion, counts repetitions, and extracts key metrics such as range of motion and path consistency to provide feedback on training performance.",
+        image: "/api/placeholder/600/400",
+        icon: FaBrain,
+        stack: ["Python", "Machine Learning", "Data Analysis", "NumPy", "Jupyter"],
+        github: "https://github.com/imahrous13/Tracking-barbell-exercises-with-ml",
+        demo: "https://barbell-tracking-demo.com",
+        category: "Machine Learning"
+      },
+      
     {
       title: "Tic-Tac-Toe AI with Genetic Algorithm",
       description: "Intelligent Tic-Tac-Toe game featuring AI training using Genetic Algorithm. The AI learns optimal strategies through evolutionary computation, demonstrating advanced machine learning concepts in game theory.",
       image: "/api/placeholder/600/400",
-      icon: FaBrain,
+      icon: FaGamepad,
       stack: ["Python", "Genetic Algorithms", "AI", "Game Theory"],
       github: "https://github.com/imahrous13/tictactoe_AI",
       demo: "https://tictactoe-ai-demo.com",
