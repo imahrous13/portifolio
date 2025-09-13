@@ -125,6 +125,44 @@ The website uses Framer Motion for smooth animations:
 - `npm run build` - Builds the app for production
 - `npm run eject` - Ejects from Create React App (irreversible)
 
+## ✉️ Contact Form Backend
+
+This project includes serverless endpoints under `api/` for sending contact form messages.
+
+Endpoints:
+- `POST /api/contact` — send a message
+- `GET /api/health` — check configuration booleans (no secrets)
+
+### Option A: Resend (recommended)
+1. In your hosting (e.g., Vercel → Project → Settings → Environment Variables) set:
+   - `RESEND_API_KEY` — your Resend API key
+   - `CONTACT_TO_EMAIL` — destination inbox (e.g., `you@domain.com`)
+   - `CONTACT_FROM_EMAIL` — verified sender (e.g., `Portfolio <you@domain.com>`)
+2. Redeploy the project.
+3. Open `/api/health` to verify required envs are `true`.
+4. Submit the contact form.
+
+### Option B: SMTP (fallback)
+1. Set the following env vars:
+   - `SMTP_HOST` — e.g., `smtp.gmail.com`
+   - `SMTP_PORT` — `465` (SSL) or `587` (TLS)
+   - `SMTP_USER` — SMTP username (e.g., Gmail address)
+   - `SMTP_PASS` — SMTP password (Gmail app password if 2FA)
+   - `CONTACT_TO_EMAIL` — destination inbox
+   - `CONTACT_FROM_EMAIL` — sender address (defaults to `SMTP_USER` if unset)
+2. Redeploy and verify `/api/health`.
+3. Submit the form.
+
+Notes:
+- The handler tries Resend first if `RESEND_API_KEY` is set, then falls back to SMTP if configured.
+- For quick wiring checks, set `DRY_RUN=true` then submit the form; it will respond with `{ ok: true, dryRun: true }` without sending an email.
+
+### Local test harness
+Run a local DRY_RUN against the handler:
+```
+node scripts/test-contact.js
+```
+
 ## 📄 License
 
 This project is open source and available under the [MIT License](LICENSE).
