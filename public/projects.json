@@ -1,0 +1,16 @@
+{
+  "projects": [
+    {
+      "title": "MindWell AI",
+      "description": "AI-powered project for mental wellness insights and support.",
+      "image": "/api/placeholder/600/400",
+      "stack": ["Python", "AI", "NLP"],
+      "repo": "https://github.com/imahrous13/mindwell_ai",
+      "demo": "#",
+      "category": "Machine Learning",
+      "featured": true
+    }
+  ]
+}
+
+

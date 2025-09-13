@@ -51,7 +51,7 @@ module.exports = async (req, res) => {
   }
 
   const resendApiKey = process.env.RESEND_API_KEY;
-  const toEmail = process.env.CONTACT_TO_EMAIL || process.env.CONTACT_FROM_EMAIL;
+  const toEmail = process.env.CONTACT_TO_EMAIL || process.env.CONTACT_FROM_EMAIL || 'imahrous13@gmail.com';
   const fromEmail = process.env.CONTACT_FROM_EMAIL || 'Portfolio Contact <onboarding@resend.dev>';
   const isDryRun = String(process.env.DRY_RUN || '').toLowerCase() === 'true' || process.env.DRY_RUN === '1';
 
