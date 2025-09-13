@@ -1,4 +1,5 @@
 const { Resend } = require('resend');
+const nodemailer = require('nodemailer');
 
 // Small helper to send consistent JSON
 function json(res, status, payload) {
@@ -80,18 +81,48 @@ module.exports = async (req, res) => {
     return json(res, 200, { ok: true, dryRun: true });
   }
 
-  const resend = new Resend(resendApiKey);
+  // Try Resend first, then SMTP fallback
+  try {
+    if (resendApiKey) {
+      const resend = new Resend(resendApiKey);
+      const result = await resend.emails.send(emailPayload);
+      return json(res, 200, { ok: true, id: result?.id || null, via: 'resend' });
+    }
+  } catch (error) {
+    console.error('Resend send failed, attempting SMTP fallback:', normalizeError(error));
+  }
+
+  // SMTP fallback
+  const smtpHost = process.env.SMTP_HOST;
+  const smtpPort = process.env.SMTP_PORT ? Number(process.env.SMTP_PORT) : undefined;
+  const smtpUser = process.env.SMTP_USER;
+  const smtpPass = process.env.SMTP_PASS;
+
+  if (!smtpHost || !smtpPort || !smtpUser || !smtpPass) {
+    return json(res, 502, { error: 'Email send failed and no SMTP fallback configured.' });
+  }
 
   try {
-    const result = await resend.emails.send(emailPayload);
-    return json(res, 200, { ok: true, id: result?.id || null });
-  } catch (error) {
-    const normalized = normalizeError(error);
-    console.error('Contact email send failed:', normalized);
-    return json(res, normalized.statusCode || 502, {
-      error: normalized.message || 'Failed to send message',
-      code: normalized.code || 'SEND_FAILED'
+    const transporter = nodemailer.createTransport({
+      host: smtpHost,
+      port: smtpPort,
+      secure: smtpPort === 465,
+      auth: { user: smtpUser, pass: smtpPass }
     });
+
+    const info = await transporter.sendMail({
+      from: fromEmail,
+      to: Array.isArray(toEmail) ? toEmail.join(',') : toEmail,
+      subject: `[Portfolio] ${trimmedSubject}`,
+      text: `Name: ${trimmedName}\nEmail: ${trimmedEmail}\n\n${trimmedMessage}`,
+      html: emailPayload.html,
+      replyTo: trimmedEmail
+    });
+    return json(res, 200, { ok: true, id: info.messageId || null, via: 'smtp' });
+  } catch (smtpErr) {
+    const normalized = normalizeError(smtpErr);
+    console.error('SMTP send failed:', normalized);
+    return json(res, 502, { error: 'Failed to send message via SMTP', details: normalized });
   }
 };
 
