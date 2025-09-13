@@ -82,14 +82,35 @@ const Contact = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    if (isSubmitting) return;
     setIsSubmitting(true);
-    
-    // Simulate form submission
-    setTimeout(() => {
-      setIsSubmitting(false);
+    try {
+      const res = await fetch('/api/contact', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          name: formData.name,
+          email: formData.email,
+          subject: formData.subject,
+          message: formData.message,
+        })
+      });
+      if (!res.ok) {
+        let msg = 'Failed to send message. Please try again.';
+        try {
+          const data = await res.json();
+          if (data && data.error) msg = data.error;
+        } catch {}
+        alert(msg);
+        return;
+      }
       setFormData({ name: '', email: '', subject: '', message: '' });
       alert('Message sent successfully! I\'ll get back to you soon.');
-    }, 2000);
+    } catch (err) {
+      alert('Network error. Please try again later.');
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (
