@@ -1,3 +1,67 @@
+Email Sender (Gmail SMTP)
+
+This is a tiny, reusable Python script to send emails via SMTP (tested with Gmail). It defaults to sending to `imahrous13@gmail.com` but you can override the recipient.
+
+Prerequisites
+- Python 3.8+
+- A Gmail account with 2‑Step Verification enabled
+- A Gmail App Password (16 characters) for SMTP
+
+Get a Gmail App Password
+1. Turn on 2‑Step Verification in your Google Account.
+2. Create an App Password for "Mail" on your device.
+   - Official guides: [Turn on 2‑Step Verification](https://support.google.com/accounts/answer/185839) and [Sign in with app passwords](https://support.google.com/accounts/answer/185833).
+
+Setup
+1. Copy `.env.example` to `.env` and fill in your details:
+   - `EMAIL_USER`: your Gmail address
+   - `EMAIL_PASS`: your Gmail App Password
+   - Optionally adjust `DEFAULT_TO` and `EMAIL_FROM`
+2. (Optional) Install `python-dotenv` to auto-load `.env` files:
+   ```bash
+   pip install -r requirements.txt
+   ```
+
+Usage
+- Quick send (plain text):
+  ```bash
+  python3 send_email.py --subject "Hello" --text "This is a test"
+  ```
+- Send HTML:
+  ```bash
+  python3 send_email.py --subject "Hello" --html "<h1>Hi</h1><p>Test</p>"
+  ```
+- Override recipient(s):
+  ```bash
+  python3 send_email.py --to someone@example.com other@example.com --subject "Update" --text "FYI"
+  ```
+- Override SMTP settings (if not using Gmail):
+  ```bash
+  python3 send_email.py \
+    --smtp-host smtp.example.com \
+    --smtp-port 587 \
+    --tls \
+    --username user@example.com \
+    --password "your_password" \
+    --from "Your Name <user@example.com>" \
+    --to recipient@example.com \
+    --subject "Hello" \
+    --text "Hello from a different SMTP server"
+  ```
+
+Environment variables
+- `EMAIL_USER`, `EMAIL_PASS` (required): SMTP credentials (Gmail App Password recommended)
+- `EMAIL_FROM` (optional): From header. Defaults to `EMAIL_USER`
+- `DEFAULT_TO` (optional): Default recipient. Defaults to `imahrous13@gmail.com`
+- `SMTP_HOST` (default `smtp.gmail.com`)
+- `SMTP_PORT` (default `465`)
+- `SMTP_USE_SSL` (default `true`)
+- `SMTP_USE_TLS` (default `false`)
+
+Note
+- Do not use your normal Gmail password. Use an App Password.
+- Do not commit your `.env` with secrets.
+
 # Ibrahim Mohamed Mahrous - Portfolio Website
 
 A modern, responsive portfolio website built with React, Tailwind CSS, and Framer Motion. Showcasing projects in Machine Learning, Computer Vision, Full-Stack Development, and Operations Research.
