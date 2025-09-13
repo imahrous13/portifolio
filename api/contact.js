@@ -22,11 +22,19 @@ module.exports = async (req, res) => {
   }
 
   const contentType = req.headers['content-type'] || '';
-  if (!contentType.includes('application/json')) {
-    return json(res, 400, { error: 'Content-Type must be application/json' });
+
+  // Support both already-parsed bodies and raw stream bodies
+  let body = req.body;
+  if (!body || typeof body === 'string') {
+    try {
+      const raw = typeof body === 'string' ? body : await readRawBody(req);
+      body = raw && contentType.includes('application/json') ? JSON.parse(raw) : {};
+    } catch (e) {
+      return json(res, 400, { error: 'Invalid JSON body' });
+    }
   }
 
-  const { name, email, subject, message } = req.body || {};
+  const { name, email, subject, message } = body || {};
 
   const trimmedName = (name || '').trim();
   const trimmedEmail = (email || '').trim();
@@ -64,8 +72,7 @@ module.exports = async (req, res) => {
            <hr />
            <p>${escapeHtml(trimmedMessage).replace(/\n/g, '<br/>')}</p>`
   };
-  // Support both replyTo and reply_to to be safe across SDK versions
-  emailPayload.replyTo = trimmedEmail;
+  // Set reply_to per Resend API
   emailPayload.reply_to = trimmedEmail;
 
   if (isDryRun) {
@@ -109,5 +116,14 @@ function normalizeError(err) {
     message: err.message || (details && details.message) || 'Unknown error',
     details
   };
+}
+
+function readRawBody(req) {
+  return new Promise((resolve, reject) => {
+    let data = '';
+    req.on('data', chunk => { data += chunk; });
+    req.on('end', () => resolve(data));
+    req.on('error', reject);
+  });
 }
 
