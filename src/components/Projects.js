@@ -37,7 +37,7 @@ const Projects = () => {
     'Operations Research': '📈' 
   };
 
-  const projects = [
+  const projects = useMemo(() => [
     {
       title: "Intelligence School Management System",
       description:
@@ -123,7 +123,7 @@ const Projects = () => {
     demo: "https://garbage-classification-demo.com",
     category: "Computer Vision",
   },
-  ];
+  ], []);
 
   // Optional merge from projects.json
   const [mergedProjects, setMergedProjects] = useState(projects);

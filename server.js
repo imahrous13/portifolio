@@ -9,6 +9,9 @@ const PORT = process.env.PORT || 3001;
 
 // Middleware
 app.use(express.json());
+// Serve static assets from public (for files like PDFs)
+app.use(express.static(path.join(__dirname, 'public')));
+// Serve built React app
 app.use(express.static(path.join(__dirname, 'build')));
 
 // API Routes

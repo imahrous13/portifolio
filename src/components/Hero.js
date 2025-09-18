@@ -69,23 +69,13 @@ const Hero = () => {
     window.location.reload();
   };
 
-  const downloadResumeTxt = () => {
-    const mergedProjects = [
-      'Intelligence School Management System — PHP/MySQL ERP system.',
-      'Tracking Barbell Exercises with ML — YOLO-based motion tracking.',
-      'Tic-Tac-Toe AI with GA — Trained opponent using evolutionary strategies.',
-      'Python Game Collection — Tkinter games and GUIs.',
-      'Multi-Stage Manufacturing Optimization — OR methods for efficiency.',
-      'E‑Commerce Cart System — Java-based backend cart.'
-    ];
-    const content = `Ibrahim Mohamed Mahrous\nSummary\n- ML/CV, Data Science, and Python app developer.\n\nSkills\n- Python, TensorFlow, PyTorch, scikit-learn, Pandas, OpenCV, HTML/CSS/JS.\n\nSelected Projects\n${mergedProjects.map(p=>`- ${p}`).join('\n')}\n\nContact\n- Email: imahrous13@gmail.com\n- GitHub: https://github.com/imahrous13\n- LinkedIn: https://www.linkedin.com/in/ibrahim-mahrous-b0595594\n`;
-    const blob = new Blob([content], { type: 'text/plain' });
-    const url = URL.createObjectURL(blob);
+  const downloadResumePdf = () => {
     const a = document.createElement('a');
-    a.href = url;
-    a.download = 'Ibrahim-Mahrous-Resume.txt';
+    a.href = '/IBRAHIM-MOHAMED-MAHROUS.pdf';
+    a.download = 'IBRAHIM-MOHAMED-MAHROUS.pdf';
+    document.body.appendChild(a);
     a.click();
-    URL.revokeObjectURL(url);
+    a.remove();
   };
 
   return (
@@ -143,14 +133,14 @@ const Hero = () => {
               View My Projects
             </motion.a>
             <motion.button
-              onClick={downloadResumeTxt}
+              onClick={downloadResumePdf}
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
               className="btn-secondary inline-flex items-center"
               type="button"
             >
               <FaDownload className="mr-2" />
-              Download Resume (TXT)
+              Download Resume (PDF)
             </motion.button>
             <motion.button
               onClick={shuffleTagline}
