@@ -1,0 +1,15 @@
+{
+  "projects": [
+    {
+      "title": "MindWell AI",
+      "description": "An AI-powered chatbot that supports mental wellness like a personal therapist, trained on reputable medical resources.",
+      "image": "/api/placeholder/600/400",
+      "stack": ["Python", "AI", "NLP"],
+      "repo": "https://github.com/imahrous13/mindwell_ai",
+      "demo": "#",
+      "category": "Machine Learning",
+      "featured": true
+    }
+  ]
+}
+
