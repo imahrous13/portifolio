@@ -184,15 +184,17 @@ const Projects = () => {
             console.warn('Skipping invalid GitHub project:', p);
             return null;
           }
+          // Ensure category is properly set (default to Full-Stack Development)
+          const category = p.category || 'Full-Stack Development';
           return {
             title: p.title,
             description: p.description || '',
             image: p.image || '/api/placeholder/600/400',
-            icon: iconMap[p.category] || FaDatabase,
+            icon: iconMap[category] || FaDatabase,
             stack: Array.isArray(p.stack) ? p.stack : [],
             github: p.github || '#',
             demo: p.demo || '#',
-            category: p.category || 'Full-Stack Development',
+            category: category,
             featured: !!p.featured,
             stars: p.stars || 0,
             forks: p.forks || 0,
