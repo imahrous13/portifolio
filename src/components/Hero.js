@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
 import { FaGithub, FaLinkedin, FaEnvelope, FaDownload, FaRandom } from 'react-icons/fa';
 
@@ -55,18 +55,16 @@ const Hero = () => {
     return Number.isFinite(idx) && idx >= 0 && idx < max ? idx : 0;
   };
 
-  const taglineIndex = getSavedIndex(TL_KEY, TAGLINES.length);
-  const subtitleIndex = getSavedIndex(ST_KEY, SUBTITLES.length);
+  const [taglineIndex, setTaglineIndex] = useState(() => getSavedIndex(TL_KEY, TAGLINES.length));
+  const [subtitleIndex, setSubtitleIndex] = useState(() => getSavedIndex(ST_KEY, SUBTITLES.length));
 
   const shuffleTagline = () => {
     const nextTL = Math.floor(Math.random() * TAGLINES.length);
     const nextST = Math.floor(Math.random() * SUBTITLES.length);
     window.localStorage.setItem(TL_KEY, String(nextTL));
     window.localStorage.setItem(ST_KEY, String(nextST));
-    // Force update by navigating hash (cheap) then reverting, or trigger state via location replace
-    // Simpler: reload only Hero via full refresh of the page area; here we use location.reload for reliability
-    window.location.hash = '#home';
-    window.location.reload();
+    setTaglineIndex(nextTL);
+    setSubtitleIndex(nextST);
   };
 
   const downloadResumePdf = () => {

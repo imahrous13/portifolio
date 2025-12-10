@@ -1,15 +1,285 @@
 {
   "projects": [
     {
-      "title": "MindWell AI",
-      "description": "An AI-powered chatbot that supports mental wellness like a personal therapist, trained on reputable medical resources.",
-      "image": "/api/placeholder/600/400",
-      "stack": ["Python", "AI", "NLP"],
-      "repo": "https://github.com/imahrous13/mindwell_ai",
+      "title": "Squat Analysis System",
+      "description": "A real-time computer vision system that analyzes squat form using MediaPipe Pose estimation. It detects key body landmarks to assess depth, knee alignment, and back posture, providing instant feedback to correct form and prevent injury.",
+      "image": "/images/squat-analysis.jpg",
+      "category": "Computer Vision",
+      "stack": ["Python", "OpenCV", "MediaPipe", "NumPy", "Real-time Processing"],
+      "github": "https://github.com/imahrous13/squat_analysis",
       "demo": "#",
+      "featured": true,
+      "readme_summary": {
+        "features": [
+          "Real-time pose estimation using MediaPipe",
+          "Depth analysis to ensure proper squat mechanics",
+          "Knee valgus detection to prevent ACL injuries",
+          "Back angle monitoring for neutral spine maintenance",
+          "Repetition counter with state machine logic"
+        ],
+        "installation": "pip install opencv-python mediapipe numpy",
+        "usage": "python main.py"
+      }
+    },
+    {
+      "title": "Garbage Classification (TrashNet)",
+      "description": "Deep learning model for automatic waste segregation. classification. Utilizes Convolutional Neural Networks (CNNs) and Transfer Learning to classify garbage into categories like glass, paper, cardboard, plastic, metal, and trash, aiding in recycling efforts.",
+      "image": "/images/garbage-classification.jpg",
+      "category": "Computer Vision",
+      "stack": ["Python", "PyTorch", "ResNet50", "Deep Learning", "CNN"],
+      "github": "https://github.com/imahrous13/Garbage-Classification",
+      "demo": "#",
+      "featured": true,
+      "readme_summary": {
+        "features": [
+          "Multi-class image classification (6 categories)",
+          "Transfer learning using ResNet50",
+          "Data augmentation to handle class imbalance",
+          "High accuracy on the TrashNet dataset"
+        ],
+        "installation": "pip install torch torchvision matplotlib",
+        "usage": "python train.py"
+      }
+    },
+    {
+      "title": "Tracking Barbell Exercises",
+      "description": "An advanced tracking system for barbell movements (bench press, deadlift, squats). It tracks the barbell's path to analyze consistency, velocity, and range of motion, using computer vision to digitize workout analytics.",
+      "image": "/images/barbell-tracker.jpg",
+      "category": "Computer Vision",
+      "stack": ["Python", "OpenCV", "Object Tracking", "Data Analytics"],
+      "github": "https://github.com/imahrous13/Tracking-barbell-exercises-with-ml",
+      "demo": "#",
+      "featured": true,
+       "readme_summary": {
+        "features": [
+          "Barbell path visualization",
+          "Velocity and ROM calculation",
+          "Repetition counting",
+          "Form consistency analysis"
+        ],
+        "installation": "pip install opencv-python pandas",
+        "usage": "python tracker.py --video input.mp4"
+      }
+    },
+    {
+      "title": "Intelligence School Management",
+      "description": "A comprehensive web-based school management system. Modules include student registration, attendance tracking, grade management, teacher portals, and timetable scheduling. Built to streamline administrative tasks for educational institutions.",
+      "image": "/images/school-management.jpg",
+      "category": "Web Development",
+      "stack": ["PHP", "MySQL", "JavaScript", "HTML5/CSS3", "Bootstrap"],
+      "github": "https://github.com/imahrous13/intelligence-school",
+      "demo": "#",
+      "featured": false,
+      "readme_summary": {
+          "features": [
+            "Role-based access (Admin, Teacher, Student)",
+            "Attendance management system",
+            "Grade and report card generation",
+            "Student information system (SIS)"
+          ],
+          "installation": "Deploy on Apache/Nginx with MySQL",
+          "usage": "Access via browser at localhost"
+      }
+    },
+    {
+      "title": "MindWell AI",
+      "description": "An AI-powered mental health support application. This project likely involves natural language processing (NLP) to provide conversational support, sentiment analysis, or resource recommendations for mental wellness.",
+      "image": "/images/mindwell.jpg",
       "category": "Machine Learning",
-      "featured": true
+      "stack": ["Python", "NLP", "TensorFlow/PyTorch", "Flask", "React"],
+      "github": "https://github.com/imahrous13/MindWell_AI",
+      "demo": "#",
+      "featured": true,
+      "readme_summary": {
+          "features": [
+            "Sentiment analysis of user inputs",
+            "Chatbot interface for immediate support",
+            "Resource recommendation engine",
+            "Mood tracking and visualization"
+          ],
+          "installation": "pip install -r requirements.txt",
+          "usage": "python app.py"
+      }
+    },
+    {
+      "title": "Heart Disease Analysis",
+      "description": "Data science project focused on predicting heart disease risk. Performs extensive Exploratory Data Analysis (EDA) on clinical datasets and builds classification models (Logistic Regression, Random Forest) to identify key risk factors.",
+      "image": "/images/heart-disease.jpg",
+      "category": "Data Science",
+      "stack": ["Python", "Pandas", "Scikit-learn", "Seaborn", "Matplotlib"],
+      "github": "https://github.com/imahrous13/Heart-Disease-analysis",
+      "demo": "#",
+      "featured": false,
+      "readme_summary": {
+          "features": [
+            "Comprehensive EDA and data visualization",
+            "Correlation matrix analysis",
+            "Predictive modeling with high accuracy",
+            "Feature importance ranking"
+          ],
+          "installation": "pip install pandas scikit-learn seaborn",
+          "usage": "jupyter notebook analysis.ipynb"
+      }
+    },
+    {
+      "title": "Face Detection System",
+      "description": "Robust face detection application using Haar Cascades or deep learning based detectors. Capable of detecting multiple faces in images and video streams in real-time.",
+      "image": "/images/face-detection.jpg",
+      "category": "Computer Vision",
+      "stack": ["Python", "OpenCV", "Haar Cascades", "Deep Learning"],
+      "github": "https://github.com/imahrous13/Face-Detection",
+      "demo": "#",
+      "featured": false,
+      "readme_summary": {
+          "features": [
+            "Real-time face detection",
+            "Multiple face tracking",
+            "Low-latency performance",
+            "Easy integration with webcams"
+          ],
+          "installation": "pip install opencv-python",
+          "usage": "python detect.py"
+      }
+    },
+    {
+      "title": "Artistic Image Filters",
+      "description": "Image processing application that applies artistic styles to photos. Uses convolution kernels and potentially style transfer techniques to transform ordinary images into artwork (sketches, oil painting effects, etc.).",
+      "image": "/images/artistic-filters.jpg",
+      "category": "Computer Vision",
+      "stack": ["Python", "OpenCV", "NumPy", "Image Processing"],
+      "github": "https://github.com/imahrous13/Artistic-Image-Filters",
+      "demo": "#",
+      "featured": false,
+      "readme_summary": {
+          "features": [
+            "Cartoonify filter",
+            "Pencil sketch effect",
+            "Oil painting effect",
+            "Adjustable intensity parameters"
+          ],
+          "installation": "pip install opencv-python",
+          "usage": "python filters.py --image input.jpg"
+      }
+    },
+    {
+      "title": "Multi-Stage Manufacturing Process",
+      "description": "Operations Research project optimizing a multi-stage continuous flow manufacturing system. Uses linear programming or simulation to minimize costs, reduce bottlenecks, and maximize throughput in a production line.",
+      "image": "/images/manufacturing.jpg",
+      "category": "Operations Research",
+      "stack": ["Python", "Linear Programming", "SciPy/PuLP", "Optimization"],
+      "github": "https://github.com/imahrous13/Multi-stage-continuous-flow-manufacturing-process",
+      "demo": "#",
+      "featured": false,
+      "readme_summary": {
+          "features": [
+            "Optimization of production stages",
+            "Resource allocation modeling",
+            "Cost minimization algorithms",
+            "Throughput analysis"
+          ],
+          "installation": "pip install scipy pulp",
+          "usage": "python optimize.py"
+      }
+    },
+    {
+      "title": "Email Spam Classifier",
+      "description": "Classic NLP machine learning project. Builds a classifier (Naive Bayes, SVM) to automatically detect and filter spam emails from legitimate ones, using text preprocessing and TF-IDF vectorization.",
+      "image": "/images/spam-classifier.jpg",
+      "category": "Machine Learning",
+      "stack": ["Python", "Scikit-learn", "NLP", "NLTK", "Pandas"],
+      "github": "https://github.com/imahrous13/email_spam_classifier",
+      "demo": "#",
+      "featured": false,
+      "readme_summary": {
+          "features": [
+            "Text preprocessing (Tokenization, Stopword removal)",
+            "TF-IDF Vectorization",
+            "High accuracy spam detection",
+            "Confusion matrix visualization"
+          ],
+          "installation": "pip install scikit-learn nltk pandas",
+          "usage": "python train_model.py"
+      }
+    },
+    {
+      "title": "E-Commerce Cart System",
+      "description": "Backend implementation of an e-commerce shopping cart. Handles adding items, calculating totals, managing sessions, and checkout processes. Likely built with Java or PHP.",
+      "image": "/images/cart-system.jpg",
+      "category": "Web Development",
+      "stack": ["Java", "OOP", "Data Structures", "Backend"],
+      "github": "https://github.com/imahrous13/Cart",
+      "demo": "#",
+      "featured": false,
+      "readme_summary": {
+          "features": [
+            "Item management (add/remove/update)",
+            "Total price calculation",
+            "Discount logic implementation",
+            "Session persistence"
+          ],
+          "installation": "javac Main.java",
+          "usage": "java Main"
+      }
+    },
+    {
+      "title": "Python Game Collection",
+      "description": "A collection of interactive games built with Python (likely Tkinter or PyGame). Includes classics like Tic-Tac-Toe, Blackjack, or similar logic games, demonstrating object-oriented programming.",
+      "image": "/images/games.jpg",
+      "category": "Game Development",
+      "stack": ["Python", "Tkinter", "PyGame", "OOP"],
+      "github": "https://github.com/imahrous13/games",
+      "demo": "#",
+      "featured": false,
+      "readme_summary": {
+          "features": [
+            "Graphical User Interface (GUI)",
+            "Multiple game modes",
+            "Score tracking",
+            "Interactive gameplay"
+          ],
+          "installation": "pip install tkinter",
+          "usage": "python main.py"
+      }
+    },
+    {
+      "title": "Web Intelligence School",
+      "description": "Web-based extension or variation of the school management system. Focuses on the web interface and potentially smarter features for educational analytics.",
+      "image": "/images/web-school.jpg",
+      "category": "Web Development",
+      "stack": ["HTML/CSS", "JavaScript", "PHP", "Web Analytics"],
+      "github": "https://github.com/imahrous13/web-intelligence-school",
+      "demo": "#",
+      "featured": false,
+      "readme_summary": {
+          "features": [
+            "Responsive web design",
+            "Interactive dashboard",
+            "Student performance analytics",
+            "Online portal access"
+          ],
+          "installation": "Deploy to web server",
+          "usage": "Navigate to index.html"
+      }
+    },
+    {
+      "title": "Portfolio Website",
+      "description": "This modern, responsive portfolio website. Built with React and Tailwind CSS to showcase my projects and skills with a professional design and smooth animations.",
+      "image": "/images/portfolio.jpg",
+      "category": "Web Development",
+      "stack": ["React", "Tailwind CSS", "Framer Motion", "Node.js"],
+      "github": "https://github.com/imahrous13/portifolio",
+      "demo": "https://ibrahim-mahrous.com",
+      "featured": true,
+      "readme_summary": {
+          "features": [
+            "Modern aesthetic design",
+            "Responsive layout",
+            "Dynamic project loading",
+            "Interactive animations"
+          ],
+          "installation": "npm install",
+          "usage": "npm start"
+      }
     }
   ]
 }
-

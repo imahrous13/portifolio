@@ -131,6 +131,9 @@ const Projects = () => {
   
   useEffect(() => {
     let isActive = true;
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), 6000); // 6 second timeout for Github API
+
     (async () => {
       try {
         setLoading(true);
@@ -138,25 +141,25 @@ const Projects = () => {
         // Fetch from GitHub API
         let githubProjects = [];
         try {
-          const githubRes = await fetch('/api/github-projects', { cache: 'no-store' });
-          console.log('GitHub API response status:', githubRes.status, githubRes.ok);
-          
+          const githubRes = await fetch('/api/github-projects', { 
+            cache: 'no-store',
+            signal: controller.signal
+          });
+          clearTimeout(timeoutId);
+
           if (githubRes.ok) {
             const githubData = await githubRes.json();
-            console.log('GitHub API response data:', githubData);
             githubProjects = Array.isArray(githubData?.projects) ? githubData.projects : [];
-            console.log(`✅ Fetched ${githubProjects.length} projects from GitHub API`);
-            
-            if (githubProjects.length === 0 && githubData.projects) {
-              console.warn('⚠️ Projects array exists but is empty or not an array:', githubData);
-            }
+            if (isActive) console.log(`✅ Fetched ${githubProjects.length} projects from GitHub API`);
           } else {
-            const errorText = await githubRes.text();
-            console.error('❌ Failed to fetch GitHub projects:', githubRes.status, githubRes.statusText, errorText);
+            console.error('❌ Failed to fetch GitHub projects:', githubRes.status, githubRes.statusText);
           }
         } catch (fetchError) {
-          console.error('❌ Error fetching GitHub projects:', fetchError);
-          console.error('Error details:', fetchError.message, fetchError.stack);
+          if (fetchError.name === 'AbortError') {
+             console.warn('⚠️ GitHub API request timed out, falling back to local data.');
+          } else {
+             console.error('❌ Error fetching GitHub projects:', fetchError);
+          }
         }
         
         // Fetch from projects.json (for manually added projects)
@@ -179,12 +182,7 @@ const Projects = () => {
         
         // Process ALL GitHub projects first (they are the source of truth)
         const allGithubProjects = githubProjects.map(p => {
-          // Ensure we have valid data
-          if (!p || !p.title) {
-            console.warn('Skipping invalid GitHub project:', p);
-            return null;
-          }
-          // Ensure category is properly set (default to Full-Stack Development)
+          if (!p || !p.title) return null;
           const category = p.category || 'Full-Stack Development';
           return {
             title: p.title,
@@ -198,20 +196,17 @@ const Projects = () => {
             featured: !!p.featured,
             stars: p.stars || 0,
             forks: p.forks || 0,
-            updatedAt: p.updatedAt || null, // Preserve update date for sorting
+            updatedAt: p.updatedAt || null, 
           };
-        }).filter(p => p !== null); // Remove any null entries
+        }).filter(p => p !== null);
         
-        // Merge: Start with ALL GitHub projects, then override with hardcoded ones if they match
         const mergedMap = new Map();
         
-        // Add all GitHub projects first (they are the source of truth)
         allGithubProjects.forEach(p => {
           const key = p.github && p.github !== '#' ? p.github.toLowerCase() : p.title.toLowerCase();
           mergedMap.set(key, p);
         });
         
-        // Override with hardcoded projects (for custom descriptions, better demos, etc.)
         projects.forEach(hardcoded => {
           const key = hardcoded.github && hardcoded.github !== '#' 
             ? hardcoded.github.toLowerCase() 
@@ -219,23 +214,18 @@ const Projects = () => {
           
           const existing = mergedMap.get(key);
           if (existing) {
-            // Merge: use hardcoded description if provided, but keep GitHub data
             mergedMap.set(key, {
               ...existing,
               description: hardcoded.description || existing.description,
               demo: hardcoded.demo !== '#' ? hardcoded.demo : existing.demo,
-              // Keep GitHub stack but allow hardcoded to add more
               stack: [...new Set([...existing.stack, ...(hardcoded.stack || [])])],
-              // Preserve updatedAt from GitHub for sorting
               updatedAt: existing.updatedAt,
             });
           } else {
-            // Add hardcoded project that doesn't exist in GitHub
             mergedMap.set(key, hardcoded);
           }
         });
         
-        // Process JSON projects (for manually added projects)
         jsonProjects.forEach(jsonProject => {
           const githubUrl = jsonProject.repo || jsonProject.github || '#';
           const key = githubUrl !== '#' ? githubUrl.toLowerCase() : jsonProject.title.toLowerCase();
@@ -255,62 +245,34 @@ const Projects = () => {
           }
         });
         
-        // Convert map to array and sort by updated date (most recent first)
         const finalProjects = Array.from(mergedMap.values()).sort((a, b) => {
-          // Sort by updatedAt if available (GitHub projects), otherwise keep original order
-          if (a.updatedAt && b.updatedAt) {
-            return new Date(b.updatedAt) - new Date(a.updatedAt);
-          }
-          if (a.updatedAt) return -1; // GitHub projects first
+          if (a.updatedAt && b.updatedAt) return new Date(b.updatedAt) - new Date(a.updatedAt);
+          if (a.updatedAt) return -1;
           if (b.updatedAt) return 1;
-          return 0; // Keep original order for projects without dates
+          return 0;
         });
-        
-        console.log(`📦 Total projects after merge: ${finalProjects.length}`, {
-          github: githubProjects.length,
-          allGithubProcessed: allGithubProjects.length,
-          hardcoded: projects.length,
-          json: jsonProjects.length,
-          final: finalProjects.length,
-          sampleTitles: finalProjects.slice(0, 5).map(p => p.title),
-          mergedMapSize: mergedMap.size
-        });
-        
-        // Debug: Log first few projects to verify they're being processed
-        if (finalProjects.length > 0) {
-          console.log('📋 Sample projects:', finalProjects.slice(0, 3).map(p => ({
-            title: p.title,
-            github: p.github,
-            category: p.category,
-            stack: p.stack
-          })));
-        } else {
-          console.warn('⚠️ No projects in finalProjects array!', {
-            githubProjectsCount: githubProjects.length,
-            allGithubProjectsCount: allGithubProjects.length,
-            mergedMapSize: mergedMap.size
-          });
-        }
         
         if (isActive) {
-          // Always set the merged projects, even if empty (to show loading state properly)
           if (finalProjects.length > 0) {
             setMergedProjects(finalProjects);
           } else {
-            console.warn('⚠️ Falling back to hardcoded projects only');
             setMergedProjects(projects);
           }
           setLoading(false);
         }
       } catch (error) {
-        console.error('Error fetching projects:', error);
+        console.error('Error processing projects:', error);
         if (isActive) {
-          setMergedProjects(projects); // Fallback to hardcoded projects
+          setMergedProjects(projects); 
           setLoading(false);
         }
       }
     })();
-    return () => { isActive = false; };
+    return () => { 
+      isActive = false; 
+      clearTimeout(timeoutId);
+      controller.abort();
+    };
   }, [projects]);
 
   const categories = useMemo(() => ['All', ...Array.from(new Set(mergedProjects.map(p=>p.category)))], [mergedProjects]);
@@ -510,6 +472,39 @@ const Projects = () => {
               </button>
               <h3 className="text-xl font-bold text-white mb-2">{modal.project.title}</h3>
               <p className="text-gray-300 mb-4">{modal.project.description}</p>
+              
+              {modal.project.readme_summary && (
+                <div className="mb-6 space-y-4 max-h-60 overflow-y-auto pr-2 custom-scrollbar">
+                  {modal.project.readme_summary.features && (
+                    <div>
+                      <h4 className="text-sm font-semibold text-primary-400 mb-2">Key Features</h4>
+                      <ul className="list-disc list-inside text-gray-300 text-sm space-y-1">
+                        {modal.project.readme_summary.features.map((feature, i) => (
+                          <li key={i}>{feature}</li>
+                        ))}
+                      </ul>
+                    </div>
+                  )}
+                  
+                  {modal.project.readme_summary.installation && (
+                    <div>
+                      <h4 className="text-sm font-semibold text-primary-400 mb-2">Installation</h4>
+                      <code className="block bg-dark-800 p-2 rounded text-xs text-gray-300 font-mono whitespace-pre-wrap">
+                        {modal.project.readme_summary.installation}
+                      </code>
+                    </div>
+                  )}
+
+                  {modal.project.readme_summary.usage && (
+                    <div>
+                      <h4 className="text-sm font-semibold text-primary-400 mb-2">Usage</h4>
+                      <code className="block bg-dark-800 p-2 rounded text-xs text-gray-300 font-mono whitespace-pre-wrap">
+                        {modal.project.readme_summary.usage}
+                      </code>
+                    </div>
+                  )}
+                </div>
+              )}
               <div className="flex flex-wrap gap-2 mb-6">
                 {(modal.project.stack||[]).map((t,i)=>(
                   <span key={i} className="px-2 py-1 bg-dark-700/50 text-primary-400 text-xs rounded border border-dark-600">{t}</span>

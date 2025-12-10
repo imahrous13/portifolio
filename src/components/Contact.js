@@ -11,6 +11,7 @@ const Contact = () => {
   });
 
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [status, setStatus] = useState({ type: null, message: '' });
 
   const containerVariants = {
     hidden: { opacity: 0 },
@@ -84,6 +85,8 @@ const Contact = () => {
     e.preventDefault();
     if (isSubmitting) return;
     setIsSubmitting(true);
+    setStatus({ type: null, message: '' });
+
     try {
       const res = await fetch('/api/contact', {
         method: 'POST',
@@ -101,13 +104,13 @@ const Contact = () => {
           const data = await res.json();
           if (data && data.error) msg = data.error;
         } catch {}
-        alert(msg);
+        setStatus({ type: 'error', message: msg });
         return;
       }
       setFormData({ name: '', email: '', subject: '', message: '' });
-      alert('Message sent successfully! I\'ll get back to you soon.');
+      setStatus({ type: 'success', message: 'Message sent successfully! I\'ll get back to you soon.' });
     } catch (err) {
-      alert('Network error. Please try again later.');
+      setStatus({ type: 'error', message: 'Network error. Please make sure the server is running.' });
     } finally {
       setIsSubmitting(false);
     }
@@ -302,6 +305,20 @@ const Contact = () => {
                   )}
                 </motion.button>
               </div>
+
+              {status.message && (
+                <motion.div
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  className={`mt-4 p-4 rounded-lg text-sm ${
+                    status.type === 'error' 
+                      ? 'bg-red-500/10 text-red-400 border border-red-500/20' 
+                      : 'bg-green-500/10 text-green-400 border border-green-500/20'
+                  }`}
+                >
+                  {status.message}
+                </motion.div>
+              )}
             </motion.form>
           </motion.div>
         </div>
