@@ -22,9 +22,7 @@
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
-    "eject": "react-scripts eject",
-    "server": "node server.js",
-    "server:prod": "cross-env DRY_RUN=false node server.js"
+    "eject": "react-scripts eject"
   },
   "eslintConfig": {
     "extends": [
@@ -51,6 +49,5 @@
   },
   "engines": {
     "node": "20.x"
-  },
-  "proxy": "http://localhost:3001"
+  }
 }

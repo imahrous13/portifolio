@@ -43,21 +43,21 @@
     },
     {
       "title": "Tracking Barbell Exercises",
-      "description": "An advanced tracking system for barbell movements (bench press, deadlift, squats). It tracks the barbell's path to analyze consistency, velocity, and range of motion, using computer vision to digitize workout analytics.",
+      "description": "Machine learning project for analyzing barbell exercise movements from video data. Uses ML algorithms to track barbell motion, count repetitions, and extract key metrics such as range of motion, velocity, and path consistency to provide data-driven feedback on training performance.",
       "image": "/images/barbell-tracker.jpg",
-      "category": "Computer Vision",
-      "stack": ["Python", "OpenCV", "Object Tracking", "Data Analytics"],
+      "category": "Machine Learning",
+      "stack": ["Python", "Machine Learning", "OpenCV", "Pandas", "Data Analysis", "NumPy"],
       "github": "https://github.com/imahrous13/Tracking-barbell-exercises-with-ml",
       "demo": "#",
       "featured": true,
        "readme_summary": {
         "features": [
-          "Barbell path visualization",
-          "Velocity and ROM calculation",
-          "Repetition counting",
-          "Form consistency analysis"
+          "ML-based barbell path tracking and analysis",
+          "Velocity and ROM calculation using data analytics",
+          "Automated repetition counting with ML algorithms",
+          "Form consistency analysis and pattern recognition"
         ],
-        "installation": "pip install opencv-python pandas",
+        "installation": "pip install opencv-python pandas numpy scikit-learn",
         "usage": "python tracker.py --video input.mp4"
       }
     },
@@ -163,39 +163,39 @@
     },
     {
       "title": "Multi-Stage Manufacturing Process",
-      "description": "Operations Research project optimizing a multi-stage continuous flow manufacturing system. Uses linear programming or simulation to minimize costs, reduce bottlenecks, and maximize throughput in a production line.",
+      "description": "Data science project optimizing a multi-stage continuous flow manufacturing system. Uses data analysis, statistical modeling, and optimization algorithms to minimize costs, reduce bottlenecks, and maximize throughput in production lines.",
       "image": "/images/manufacturing.jpg",
-      "category": "Operations Research",
-      "stack": ["Python", "Linear Programming", "SciPy/PuLP", "Optimization"],
+      "category": "Data Science",
+      "stack": ["Python", "Data Analysis", "Optimization", "Pandas", "NumPy", "Visualization"],
       "github": "https://github.com/imahrous13/Multi-stage-continuous-flow-manufacturing-process",
       "demo": "#",
       "featured": false,
       "readme_summary": {
           "features": [
-            "Optimization of production stages",
-            "Resource allocation modeling",
-            "Cost minimization algorithms",
-            "Throughput analysis"
+            "Data-driven optimization of production stages",
+            "Statistical analysis and resource allocation modeling",
+            "Cost minimization through data analytics",
+            "Throughput analysis and visualization"
           ],
-          "installation": "pip install scipy pulp",
+          "installation": "pip install pandas numpy matplotlib scipy",
           "usage": "python optimize.py"
       }
     },
     {
       "title": "Email Spam Classifier",
-      "description": "Classic NLP machine learning project. Builds a classifier (Naive Bayes, SVM) to automatically detect and filter spam emails from legitimate ones, using text preprocessing and TF-IDF vectorization.",
+      "description": "Natural Language Processing (NLP) project for email classification. Implements text preprocessing, feature extraction, and machine learning classifiers (Naive Bayes, SVM) to automatically detect and filter spam emails using advanced NLP techniques like TF-IDF vectorization.",
       "image": "/images/spam-classifier.jpg",
-      "category": "Machine Learning",
-      "stack": ["Python", "Scikit-learn", "NLP", "NLTK", "Pandas"],
+      "category": "NLP",
+      "stack": ["Python", "NLP", "Scikit-learn", "NLTK", "Pandas", "Text Processing"],
       "github": "https://github.com/imahrous13/email_spam_classifier",
       "demo": "#",
       "featured": false,
       "readme_summary": {
           "features": [
-            "Text preprocessing (Tokenization, Stopword removal)",
-            "TF-IDF Vectorization",
-            "High accuracy spam detection",
-            "Confusion matrix visualization"
+            "Advanced text preprocessing (Tokenization, Stopword removal, Stemming)",
+            "TF-IDF Vectorization for feature extraction",
+            "Multiple NLP classifiers (Naive Bayes, SVM)",
+            "High accuracy spam detection with confusion matrix visualization"
           ],
           "installation": "pip install scikit-learn nltk pandas",
           "usage": "python train_model.py"
