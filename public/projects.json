@@ -83,19 +83,19 @@
     },
     {
       "title": "MindWell AI",
-      "description": "An AI-powered mental health support application. This project likely involves natural language processing (NLP) to provide conversational support, sentiment analysis, or resource recommendations for mental wellness.",
+      "description": "Natural Language Processing (NLP) application for mental health support. Uses sentiment analysis, conversational AI, and text processing to provide empathetic chatbot interactions and personalized resource recommendations for mental wellness.",
       "image": "/images/mindwell.jpg",
-      "category": "Machine Learning",
-      "stack": ["Python", "NLP", "TensorFlow/PyTorch", "Flask", "React"],
+      "category": "NLP",
+      "stack": ["Python", "NLP", "Sentiment Analysis", "TensorFlow", "Flask", "React"],
       "github": "https://github.com/imahrous13/MindWell_AI",
       "demo": "#",
       "featured": true,
       "readme_summary": {
           "features": [
-            "Sentiment analysis of user inputs",
-            "Chatbot interface for immediate support",
-            "Resource recommendation engine",
-            "Mood tracking and visualization"
+            "NLP-based sentiment analysis of user inputs",
+            "Conversational AI chatbot for immediate support",
+            "Text processing for mood tracking and analysis",
+            "Personalized resource recommendation engine"
           ],
           "installation": "pip install -r requirements.txt",
           "usage": "python app.py"
