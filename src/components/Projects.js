@@ -125,37 +125,152 @@ const Projects = () => {
   },
   ], []);
 
-  // Optional merge from projects.json
+  // Optional merge from projects.json and GitHub API
   const [mergedProjects, setMergedProjects] = useState(projects);
+  const [loading, setLoading] = useState(true);
   
   useEffect(() => {
     let isActive = true;
     (async () => {
       try {
-        const res = await fetch('/projects.json', { cache: 'no-store' });
-        if (!res.ok) return;
-        const data = await res.json();
-        const extras = Array.isArray(data?.projects) ? data.projects : [];
-        // Merge: avoid duplicates by github url or title
-        const seenRepo = new Set(projects.map(p=>p.github).filter(Boolean));
-        const seenTitle = new Set(projects.map(p=>p.title.toLowerCase()));
-        const uniqueExtras = extras.filter(p => {
-          const t = (p.title||'').toLowerCase();
-          return !(p.github && seenRepo.has(p.github)) && !(t && seenTitle.has(t));
-        }).map(p => ({
-          title: p.title,
-          description: p.description || p.desc || '',
-          image: p.image || '/api/placeholder/600/400',
-          icon: FaDatabase,
-          stack: p.stack || [],
-          github: p.repo || p.github || '#',
-          demo: p.demo || '#',
-          category: p.category || 'Full-Stack Development',
-          featured: !!p.featured,
-        }));
-        if (isActive) setMergedProjects([...projects, ...uniqueExtras]);
-      } catch {
-        // ignore
+        setLoading(true);
+        
+        // Fetch from GitHub API
+        const githubRes = await fetch('/api/github-projects', { cache: 'no-store' });
+        let githubProjects = [];
+        if (githubRes.ok) {
+          const githubData = await githubRes.json();
+          githubProjects = Array.isArray(githubData?.projects) ? githubData.projects : [];
+          console.log(`✅ Fetched ${githubProjects.length} projects from GitHub API`);
+        } else {
+          console.error('❌ Failed to fetch GitHub projects:', githubRes.status, githubRes.statusText);
+        }
+        
+        // Fetch from projects.json (for manually added projects)
+        const jsonRes = await fetch('/projects.json', { cache: 'no-store' });
+        let jsonProjects = [];
+        if (jsonRes.ok) {
+          const jsonData = await jsonRes.json();
+          jsonProjects = Array.isArray(jsonData?.projects) ? jsonData.projects : [];
+        }
+        
+        // Icon mapping for categories
+        const iconMap = {
+          'Computer Vision': FaEye,
+          'Machine Learning': FaBrain,
+          'Data Science': FaChartLine,
+          'Game Development': FaGamepad,
+          'Operations Research': FaChartLine,
+          'Full-Stack Development': FaDatabase
+        };
+        
+        // Process ALL GitHub projects first (they are the source of truth)
+        const allGithubProjects = githubProjects.map(p => {
+          // Ensure we have valid data
+          if (!p || !p.title) {
+            console.warn('Skipping invalid GitHub project:', p);
+            return null;
+          }
+          return {
+            title: p.title,
+            description: p.description || '',
+            image: p.image || '/api/placeholder/600/400',
+            icon: iconMap[p.category] || FaDatabase,
+            stack: Array.isArray(p.stack) ? p.stack : [],
+            github: p.github || '#',
+            demo: p.demo || '#',
+            category: p.category || 'Full-Stack Development',
+            featured: !!p.featured,
+            stars: p.stars || 0,
+            forks: p.forks || 0,
+            updatedAt: p.updatedAt || null, // Preserve update date for sorting
+          };
+        }).filter(p => p !== null); // Remove any null entries
+        
+        // Merge: Start with ALL GitHub projects, then override with hardcoded ones if they match
+        const mergedMap = new Map();
+        
+        // Add all GitHub projects first (they are the source of truth)
+        allGithubProjects.forEach(p => {
+          const key = p.github && p.github !== '#' ? p.github.toLowerCase() : p.title.toLowerCase();
+          mergedMap.set(key, p);
+        });
+        
+        // Override with hardcoded projects (for custom descriptions, better demos, etc.)
+        projects.forEach(hardcoded => {
+          const key = hardcoded.github && hardcoded.github !== '#' 
+            ? hardcoded.github.toLowerCase() 
+            : hardcoded.title.toLowerCase();
+          
+          const existing = mergedMap.get(key);
+          if (existing) {
+            // Merge: use hardcoded description if provided, but keep GitHub data
+            mergedMap.set(key, {
+              ...existing,
+              description: hardcoded.description || existing.description,
+              demo: hardcoded.demo !== '#' ? hardcoded.demo : existing.demo,
+              // Keep GitHub stack but allow hardcoded to add more
+              stack: [...new Set([...existing.stack, ...(hardcoded.stack || [])])],
+              // Preserve updatedAt from GitHub for sorting
+              updatedAt: existing.updatedAt,
+            });
+          } else {
+            // Add hardcoded project that doesn't exist in GitHub
+            mergedMap.set(key, hardcoded);
+          }
+        });
+        
+        // Process JSON projects (for manually added projects)
+        jsonProjects.forEach(jsonProject => {
+          const githubUrl = jsonProject.repo || jsonProject.github || '#';
+          const key = githubUrl !== '#' ? githubUrl.toLowerCase() : jsonProject.title.toLowerCase();
+          
+          if (!mergedMap.has(key)) {
+            mergedMap.set(key, {
+              title: jsonProject.title,
+              description: jsonProject.description || jsonProject.desc || '',
+              image: jsonProject.image || '/api/placeholder/600/400',
+              icon: FaDatabase,
+              stack: jsonProject.stack || [],
+              github: githubUrl,
+              demo: jsonProject.demo || '#',
+              category: jsonProject.category || 'Full-Stack Development',
+              featured: !!jsonProject.featured,
+            });
+          }
+        });
+        
+        // Convert map to array and sort by updated date (most recent first)
+        const finalProjects = Array.from(mergedMap.values()).sort((a, b) => {
+          // Sort by updatedAt if available (GitHub projects), otherwise keep original order
+          if (a.updatedAt && b.updatedAt) {
+            return new Date(b.updatedAt) - new Date(a.updatedAt);
+          }
+          if (a.updatedAt) return -1; // GitHub projects first
+          if (b.updatedAt) return 1;
+          return 0; // Keep original order for projects without dates
+        });
+        
+        console.log(`📦 Total projects after merge: ${finalProjects.length}`, {
+          github: githubProjects.length,
+          allGithubProcessed: allGithubProjects.length,
+          hardcoded: projects.length,
+          json: jsonProjects.length,
+          final: finalProjects.length,
+          sampleTitles: finalProjects.slice(0, 5).map(p => p.title)
+        });
+        
+        if (isActive) {
+          // Always set the merged projects, even if empty (to show loading state properly)
+          setMergedProjects(finalProjects.length > 0 ? finalProjects : projects);
+          setLoading(false);
+        }
+      } catch (error) {
+        console.error('Error fetching projects:', error);
+        if (isActive) {
+          setMergedProjects(projects); // Fallback to hardcoded projects
+          setLoading(false);
+        }
       }
     })();
     return () => { isActive = false; };
@@ -246,15 +361,24 @@ const Projects = () => {
           </div>
         </div>
 
+        {/* Loading Indicator */}
+        {loading && (
+          <div className="text-center py-12">
+            <div className="inline-block animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-primary-500"></div>
+            <p className="text-gray-400 mt-4">Loading projects from GitHub...</p>
+          </div>
+        )}
+
         {/* Project Grid */}
-        <motion.div
-          variants={containerVariants}
-          initial="hidden"
-          whileInView="visible"
-          viewport={{ once: true, amount: 0.2 }}
-          className="grid md:grid-cols-2 lg:grid-cols-3 gap-8"
-        >
-          {filtered.map((project, index) => (
+        {!loading && (
+          <motion.div
+            variants={containerVariants}
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true, amount: 0.2 }}
+            className="grid md:grid-cols-2 lg:grid-cols-3 gap-8"
+          >
+            {filtered.map((project, index) => (
             <motion.div
               key={index}
               variants={itemVariants}
@@ -329,7 +453,8 @@ const Projects = () => {
               </div>
             </motion.div>
           ))}
-        </motion.div>
+          </motion.div>
+        )}
 
         {/* Modal */}
         {modal.open && modal.project && (

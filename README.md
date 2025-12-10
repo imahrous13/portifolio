@@ -8,6 +8,7 @@ A modern, responsive portfolio website built with React, Tailwind CSS, and Frame
 - **Responsive Layout**: Optimized for all device sizes (mobile, tablet, desktop)
 - **Interactive Animations**: Smooth transitions and hover effects using Framer Motion
 - **Project Showcase**: Detailed project cards with GitHub and demo links
+- **GitHub Integration**: Automatically fetches and displays projects from your GitHub repositories
 - **Skills Visualization**: Animated progress bars and skill categories
 - **Contact Form**: Functional contact form with validation
 - **SEO Optimized**: Meta tags and semantic HTML structure
@@ -39,7 +40,22 @@ cd portfolio
 npm install
 ```
 
-### 3. Start Development Server
+### 3. Configure Environment Variables (Optional)
+
+Create a `.env` file in the root directory to configure GitHub integration:
+
+```bash
+# GitHub Configuration
+GITHUB_USERNAME=your_github_username
+
+# Optional: GitHub Personal Access Token for higher rate limits
+# Create one at: https://github.com/settings/tokens
+GITHUB_TOKEN=ghp_your_token_here
+```
+
+**Note**: If you don't set `GITHUB_USERNAME`, it defaults to `imahrous13`. The GitHub token is optional but recommended for production to avoid rate limiting (increases limit from 60 to 5000 requests/hour).
+
+### 4. Start Development Server
 
 ```bash
 npm start
@@ -47,7 +63,16 @@ npm start
 
 The application will open in your browser at `http://localhost:3000`.
 
-### 4. Build for Production
+**Note**: Make sure to also start the backend server for GitHub integration to work:
+
+```bash
+# In a separate terminal
+npm run server
+```
+
+The backend server runs on `http://localhost:3001` by default.
+
+### 5. Build for Production
 
 ```bash
 npm run build
@@ -92,9 +117,30 @@ colors: {
 ### Content Updates
 
 1. **Personal Information**: Update the content in each component file
-2. **Projects**: Modify the `projects` array in `src/components/Projects.js`
+2. **Projects**: 
+   - Projects are automatically fetched from your GitHub repositories
+   - You can still add manual projects via `public/projects.json`
+   - Hardcoded projects in `src/components/Projects.js` are always shown first
 3. **Skills**: Update the `skillCategories` array in `src/components/Skills.js`
 4. **Contact Info**: Change contact details in `src/components/Contact.js` and `src/components/Footer.js`
+
+### GitHub Integration
+
+The portfolio automatically fetches your GitHub repositories and displays them as projects. The system:
+
+- Fetches all non-archived repositories from your GitHub account
+- Automatically categorizes projects based on repository name, description, topics, and language
+- Merges GitHub projects with manually added projects (from `projects.json` and hardcoded projects)
+- Updates automatically when you push new repositories to GitHub
+- Caches results for 1 hour to reduce API calls
+
+**Project Categories**: Projects are automatically categorized into:
+- Full-Stack Development
+- Computer Vision
+- Machine Learning
+- Data Science
+- Game Development
+- Operations Research
 
 ### Images
 

@@ -16,6 +16,7 @@ app.use(express.static(path.join(__dirname, 'build')));
 
 // API Routes
 app.get('/api/health', require('./api/health'));
+app.get('/api/github-projects', require('./api/github-projects'));
 app.post('/api/contact', contactHandler);
 
 // Serve React app
