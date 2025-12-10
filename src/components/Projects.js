@@ -136,14 +136,27 @@ const Projects = () => {
         setLoading(true);
         
         // Fetch from GitHub API
-        const githubRes = await fetch('/api/github-projects', { cache: 'no-store' });
         let githubProjects = [];
-        if (githubRes.ok) {
-          const githubData = await githubRes.json();
-          githubProjects = Array.isArray(githubData?.projects) ? githubData.projects : [];
-          console.log(`✅ Fetched ${githubProjects.length} projects from GitHub API`);
-        } else {
-          console.error('❌ Failed to fetch GitHub projects:', githubRes.status, githubRes.statusText);
+        try {
+          const githubRes = await fetch('/api/github-projects', { cache: 'no-store' });
+          console.log('GitHub API response status:', githubRes.status, githubRes.ok);
+          
+          if (githubRes.ok) {
+            const githubData = await githubRes.json();
+            console.log('GitHub API response data:', githubData);
+            githubProjects = Array.isArray(githubData?.projects) ? githubData.projects : [];
+            console.log(`✅ Fetched ${githubProjects.length} projects from GitHub API`);
+            
+            if (githubProjects.length === 0 && githubData.projects) {
+              console.warn('⚠️ Projects array exists but is empty or not an array:', githubData);
+            }
+          } else {
+            const errorText = await githubRes.text();
+            console.error('❌ Failed to fetch GitHub projects:', githubRes.status, githubRes.statusText, errorText);
+          }
+        } catch (fetchError) {
+          console.error('❌ Error fetching GitHub projects:', fetchError);
+          console.error('Error details:', fetchError.message, fetchError.stack);
         }
         
         // Fetch from projects.json (for manually added projects)
@@ -257,12 +270,34 @@ const Projects = () => {
           hardcoded: projects.length,
           json: jsonProjects.length,
           final: finalProjects.length,
-          sampleTitles: finalProjects.slice(0, 5).map(p => p.title)
+          sampleTitles: finalProjects.slice(0, 5).map(p => p.title),
+          mergedMapSize: mergedMap.size
         });
+        
+        // Debug: Log first few projects to verify they're being processed
+        if (finalProjects.length > 0) {
+          console.log('📋 Sample projects:', finalProjects.slice(0, 3).map(p => ({
+            title: p.title,
+            github: p.github,
+            category: p.category,
+            stack: p.stack
+          })));
+        } else {
+          console.warn('⚠️ No projects in finalProjects array!', {
+            githubProjectsCount: githubProjects.length,
+            allGithubProjectsCount: allGithubProjects.length,
+            mergedMapSize: mergedMap.size
+          });
+        }
         
         if (isActive) {
           // Always set the merged projects, even if empty (to show loading state properly)
-          setMergedProjects(finalProjects.length > 0 ? finalProjects : projects);
+          if (finalProjects.length > 0) {
+            setMergedProjects(finalProjects);
+          } else {
+            console.warn('⚠️ Falling back to hardcoded projects only');
+            setMergedProjects(projects);
+          }
           setLoading(false);
         }
       } catch (error) {
@@ -370,7 +405,14 @@ const Projects = () => {
         )}
 
         {/* Project Grid */}
-        {!loading && (
+        {!loading && filtered.length === 0 && (
+          <div className="text-center py-12">
+            <p className="text-gray-400 text-lg">No projects found.</p>
+            <p className="text-gray-500 text-sm mt-2">Check the browser console for debugging information.</p>
+          </div>
+        )}
+        
+        {!loading && filtered.length > 0 && (
           <motion.div
             variants={containerVariants}
             initial="hidden"
